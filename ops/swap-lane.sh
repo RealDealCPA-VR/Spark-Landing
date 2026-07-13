@@ -29,7 +29,7 @@ case "$MODE" in
     lanes/solo-a-agent-brain/run.sh
     echo "-- starting coder on B --"
     # requires the kit present at the same path on B (rsync it once)
-    ssh "$SPARK_B_SSH" "cd $(pwd) && lanes/solo-b-code-utility/run.sh"
+    ssh "$SPARK_B_SSH" "cd '$(pwd)' && lanes/solo-b-code-utility/run.sh"
     echo "-- solo mode up; gate with eval/smoke.sh --" ;;
   cluster-dsv4)
     stop_all

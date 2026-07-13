@@ -18,7 +18,7 @@ docker rm -f $NAME 2>/dev/null || true
 docker run -d --name $NAME \
   --gpus all --network host --ipc host --restart unless-stopped \
   -v "$HF_CACHE":/root/.cache/huggingface \
-  -e HF_TOKEN="$HF_TOKEN" \
+  -e HF_TOKEN="$HF_TOKEN" -e HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-0}" \
   -e VLLM_USE_V2_MODEL_RUNNER=0 \
   "$VLLM_IMAGE_NV" \
   vllm serve Qwen/Qwen3.6-27B-FP8 \

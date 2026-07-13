@@ -2,7 +2,7 @@
 
 **Two DGX Sparks arrive in a box. This repo turns them into a private, OpenAI-compatible inference platform in one day — and can prove every step worked.**
 
-![status](https://img.shields.io/badge/status-awaiting_silicon-orange) ![gates](https://img.shields.io/badge/promotion_gates-G0%E2%80%93G7-blue) ![eval](https://img.shields.io/badge/eval_suite-stdlib_only-green) ![selftest](https://img.shields.io/badge/gate_self--test-passing-brightgreen) ![hardware](https://img.shields.io/badge/target-2%C3%97_DGX_Spark_GB10-76b900)
+![status](https://img.shields.io/badge/status-awaiting_silicon-orange) ![gates](https://img.shields.io/badge/promotion_gates-G0%E2%80%93G7-blue) ![eval](https://img.shields.io/badge/eval_suite-stdlib_only-green) ![selftest](https://img.shields.io/badge/gate_self--test-passing-brightgreen) ![hardware](https://img.shields.io/badge/target-2%C3%97_DGX_Spark_GB10-76b900) ![license](https://img.shields.io/badge/license-MIT-lightgrey)
 
 Deployment kit for a 2× NVIDIA DGX Spark (GB10) cluster at VR Tax & Consulting:
 an OpenAI-compatible LiteLLM gateway on Tailscale fronting three serving lanes —

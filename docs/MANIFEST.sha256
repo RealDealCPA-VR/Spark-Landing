@@ -3,7 +3,7 @@
 # Regenerate after any content change: ops/manifest.sh (--verify to check).
 # Excluded: this file, ops/sessions/** (mutable), config/cluster.env (secret).
 372112efa6bd3c5045de3025ce758ef44923db6ecbf17e90b31453d46b00b455 *.gitignore
-7493e2a5c1bfa1e44e544bad0cbda5ca2cac05e3d241271e637329c7cc62f989 *README.md
+7eb9377e8af69accc0feb7acd9b1b1ad6b4b29a351f4716c068ef5931a82bb37 *README.md
 9df473c1e23c7254ea4ad02a31156b7afb409fd74352366bdb27603fd988d4cc *config/cluster.env.example
 772b5c3a36b5ace571be92cf8c7b98b90ee776ab0a55715a1144d91138b49cce *day0/01-preflight.sh
 4b596e40a0ea36aca3c21c7d02a1b0f5167c2d1075bf22ab7183a600c4185540 *day0/02-network-fabric.sh

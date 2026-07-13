@@ -11,9 +11,16 @@ services:
       - ./litellm-config.yaml:/app/config.yaml:ro
     environment:
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
-      - SPARK_A_HOST=${SPARK_A_HOST}
-      - SPARK_B_HOST=${SPARK_B_HOST}
-      - BRAIN_PORT=${BRAIN_PORT}
-      - CODER_PORT=${CODER_PORT}
-      - FLEET_PORT=${FLEET_PORT}
+      # LiteLLM resolves os.environ/VAR only when it is the ENTIRE value —
+      # embedded inside a URL it is taken literally. Build full URLs here.
+      - BRAIN_API_BASE=http://${SPARK_A_HOST}:${BRAIN_PORT}/v1
+      - CODER_API_BASE=http://${SPARK_B_HOST}:${CODER_PORT}/v1
+      - FLEET_API_BASE=http://${SPARK_A_HOST}:${FLEET_PORT}/v1
+      # Optional gateway auth — COMMENTED on purpose. Compose cannot omit an
+      # env entry conditionally, and LiteLLM treats a set-but-EMPTY
+      # LITELLM_MASTER_KEY as a live empty master key: every route 401s.
+      # Enable all three together: non-empty LITELLM_MASTER_KEY in
+      # config/cluster.env, this line, and master_key in litellm-config.yaml.
+      # The :? makes compose fail fast if the value is still empty.
+      # - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY:?set a non-empty value in config/cluster.env}
     command: ["--config", "/app/config.yaml", "--port", "${GATEWAY_PORT:-4000}"]

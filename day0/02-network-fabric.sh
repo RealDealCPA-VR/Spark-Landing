@@ -21,6 +21,8 @@ ip link show "$FABRIC_IFACE" >/dev/null || {
   echo "Edit FABRIC_IFACE in config/cluster.env (QSFP port names vary)."; exit 1; }
 
 sudo ip link set "$FABRIC_IFACE" up
+# MTU 9000 in the ephemeral path too — 03's validation must run at production MTU.
+sudo ip link set "$FABRIC_IFACE" mtu 9000
 sudo ip addr replace "$MY_IP/$FABRIC_CIDR" dev "$FABRIC_IFACE"
 
 # Link speed gate: expect 200000 Mb/s on a good DAC.

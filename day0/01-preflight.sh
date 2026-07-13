@@ -3,6 +3,9 @@
 # Gates the node on: arch, driver/firmware floor, docker+nvidia runtime,
 # unified memory, disk headroom. Exits nonzero on any FAIL.
 set -uo pipefail
+cd "$(dirname "$0")/.."
+# Guarded — preflight must run before cluster.env exists; without it the disk check falls back to $HOME.
+[[ -f config/cluster.env ]] && source config/cluster.env
 
 PASS=0; FAIL=0
 ok()   { echo "  PASS  $1"; PASS=$((PASS+1)); }

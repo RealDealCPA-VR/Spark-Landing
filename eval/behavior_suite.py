@@ -18,7 +18,7 @@ Gates: schema >= 7/8, adherence >= 3/4, tools 2/2 when applicable.
 Usage: eval/behavior_suite.py --base-url http://gw:4000/v1 --model coder
 Exit 0 only if all applicable gates pass. Re-run after ANY checkpoint swap.
 """
-import argparse, json, sys, urllib.request
+import argparse, json, sys, urllib.error, urllib.request
 
 def post(base, payload, timeout=300):
     req = urllib.request.Request(
@@ -96,7 +96,8 @@ def main():
                                      "max_tokens": 300,
                                      "messages": [{"role": "system", "content": SYS},
                                                   {"role": "user", "content": prompt}]})
-            obj = json.loads(strip_fences(body["choices"][0]["message"]["content"]))
+            # content can be null on reasoning models — treat as empty, count the miss
+            obj = json.loads(strip_fences(body["choices"][0]["message"].get("content") or ""))
             assert all(k in obj for k in keys)
             for k, ty in types.items():
                 assert isinstance(obj[k], ty), f"{k} wrong type"
@@ -112,7 +113,7 @@ def main():
             body = post(a.base_url, {"model": a.model, "temperature": 0.0,
                                      "max_tokens": 120,
                                      "messages": [{"role": "user", "content": prompt}]})
-            if check(body["choices"][0]["message"]["content"]):
+            if check(body["choices"][0]["message"].get("content") or ""):
                 a_ok += 1
             else:
                 print(f"  adherence miss: {prompt[:48]!r}")

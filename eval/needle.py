@@ -30,11 +30,11 @@ def build_haystack(target_tokens: int, needle: str, depth_pct: int) -> str:
     words.insert(pos, needle)
     return " ".join(words)
 
-def ask(base, model, context, question, timeout=1800):
+def ask(base, model, context, question, max_tokens=64, timeout=1800):
     req = urllib.request.Request(
         f"{base.rstrip('/')}/chat/completions",
         data=json.dumps({
-            "model": model, "temperature": 0.0, "max_tokens": 64,
+            "model": model, "temperature": 0.0, "max_tokens": max_tokens,
             "messages": [
                 {"role": "system", "content": "Answer with the exact requested value only."},
                 {"role": "user", "content": context + "\n\n" + question},
@@ -42,7 +42,8 @@ def ask(base, model, context, question, timeout=1800):
         headers={"Content-Type": "application/json"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         body = json.loads(r.read())
-    return body["choices"][0]["message"]["content"]
+    # content can be null on reasoning models — never crash, let the gate judge
+    return ((body.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
 
 def main():
     ap = argparse.ArgumentParser()
@@ -50,6 +51,8 @@ def main():
     ap.add_argument("--model", required=True)
     ap.add_argument("--context-tokens", type=int, default=100000)
     ap.add_argument("--depths", default="10,50,90")
+    ap.add_argument("--max-tokens", type=int, default=64,
+                    help="raise for reasoning-mode models that spend the budget thinking")
     a = ap.parse_args()
 
     failures = 0
@@ -59,7 +62,8 @@ def main():
         hay = build_haystack(a.context_tokens, needle, depth)
         try:
             ans = ask(a.base_url, a.model, hay,
-                      "What is the wire transfer confirmation code for the Henderson estate?")
+                      "What is the wire transfer confirmation code for the Henderson estate?",
+                      max_tokens=a.max_tokens)
         except Exception as e:
             print(f"  FAIL  depth {depth}%: request error: {e}")
             failures += 1
@@ -67,7 +71,9 @@ def main():
         if code in ans:
             print(f"  PASS  depth {depth}% @ ~{a.context_tokens} tok")
         else:
-            print(f"  FAIL  depth {depth}% @ ~{a.context_tokens} tok -> got: {ans[:120]!r}")
+            hint = ("  (empty content: reasoning-mode models may need --max-tokens headroom)"
+                    if not ans.strip() else "")
+            print(f"  FAIL  depth {depth}% @ ~{a.context_tokens} tok -> got: {ans[:120]!r}{hint}")
             failures += 1
 
     print(f"== needle: {'PASS' if failures == 0 else f'{failures} FAIL'} "

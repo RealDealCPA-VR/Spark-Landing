@@ -41,10 +41,12 @@ def main():
               "bookkeeping for a new staff accountant. No lists.")
     rates = []
     for i in range(a.runs):
-        toks, dt, _ = chat(a.base_url, a.model, prompt, a.gen_tokens)
+        toks, dt, body = chat(a.base_url, a.model, prompt, a.gen_tokens)
         if not toks:
             print("  WARN  server returned no usage.completion_tokens; timing only")
-            toks = a.gen_tokens
+            # estimate from content; safe even if choices/message/content is missing
+            content = ((body.get("choices") or [{}])[0].get("message") or {}).get("content") or ""
+            toks = len(content.split()) or a.gen_tokens
         r = toks / dt
         rates.append(r)
         print(f"  run {i+1}: {toks} tok in {dt:.2f}s -> {r:.1f} tok/s")

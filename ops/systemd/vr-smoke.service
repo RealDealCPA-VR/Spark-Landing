@@ -1,0 +1,23 @@
+# vr-smoke.service — weekly smoke gate (doc 04 §3 cadence; doc 07 Level 3
+# "weekly smoke automated ... with a notification path").
+# EXAMPLE for the Sparks (Ubuntu), written before hardware existed:
+# EDIT the paths + User= before install. See ops/systemd/README.md.
+[Unit]
+Description=VR gateway weekly smoke (eval/smoke.sh, all routes)
+Wants=network-online.target
+After=network-online.target docker.service
+# Operator-supplied notify unit (template in ops/systemd/README.md).
+# A FAIL nobody hears is not monitoring — create the unit or delete this line.
+OnFailure=vr-notify@%n.service
+
+[Service]
+Type=oneshot
+# EDIT: kit checkout on this node (same path on both nodes — doc 02 assumption).
+WorkingDirectory=/home/vr/spark-landing-kit
+# Loaded for parity with the kit's scripts. cluster.env carries inline
+# comments that systemd would fold into values — so the gateway URL is passed
+# explicitly below; edit the port there if GATEWAY_PORT moves off 4000.
+EnvironmentFile=/home/vr/spark-landing-kit/config/cluster.env
+ExecStart=/home/vr/spark-landing-kit/eval/smoke.sh http://localhost:4000
+# EDIT: the serving user (owns docker + the kit checkout).
+User=vr

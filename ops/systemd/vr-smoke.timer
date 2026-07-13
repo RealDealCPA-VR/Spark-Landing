@@ -1,0 +1,12 @@
+# vr-smoke.timer — fires vr-smoke.service weekly (doc 04 §3: "Weekly
+# (automatable): eval/smoke.sh all routes; alert on any FAIL").
+[Unit]
+Description=Weekly gateway smoke timer
+
+[Timer]
+OnCalendar=weekly
+# Catch up after downtime — a skipped week is a silent gap in the cadence.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

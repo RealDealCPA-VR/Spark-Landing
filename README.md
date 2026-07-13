@@ -63,7 +63,7 @@ sudo apt update && sudo apt dist-upgrade -y
 sudo fwupdmgr refresh && sudo fwupdmgr upgrade && sudo reboot
 # after reboot:
 ./day0/01-preflight.sh          # on BOTH nodes
-./day0/02-network-fabric.sh     # on BOTH nodes (fabric IPs differ)
+./day0/02-network-fabric.sh --persist   # on BOTH nodes (fabric IPs differ)
 ./day0/03-nccl-validate.sh      # from Spark A (head)
 ./day0/04-tailscale.sh          # optional but recommended
 ```
@@ -78,7 +78,7 @@ lanes/solo-b-code-utility/run.sh
 # Gateway box (Spark A is fine):
 cd gateway && docker compose --env-file ../config/cluster.env up -d
 # Validate from anywhere on the tailnet:
-eval/smoke.sh
+eval/smoke.sh http://<gateway>:4000
 eval/bench_decode.py --base-url http://<gateway>:4000/v1 --model brain
 eval/behavior_suite.py --base-url http://<gateway>:4000/v1 --model brain
 ```
@@ -97,7 +97,7 @@ downloading any weights.
 - `coder` (Qwen3.6-27B-FP8): 256K context, tool-calling, MTP. Interactive for
   real repo work; frontier models still plan better — that's what the
   `frontier` fallback route is for.
-- `fleet` (DeepSeek-V4-Flash, cluster): 50–67 tok/s single-stream, ~180 tok/s
+- `fleet` (DeepSeek-V4-Flash, cluster): 50–67 tok/s single-stream, ~182 tok/s
   aggregate at 6-way, up to 1M advertised context. Closest thing to frontier
   feel that runs in your office — *after* it passes your needle tests. The 1M
   number is advertised, not retrieval-proven; the kit makes you prove it.
@@ -113,7 +113,12 @@ day0/      preflight, fabric, NCCL validation, tailscale
 lanes/     one directory per serving lane; scripts are idempotent
 gateway/   LiteLLM compose + config (drop_params: true is load-bearing)
 eval/      smoke, decode benchmark, needle-at-depth, behavior suite
-ops/       RUNBOOK.md (the gotcha compendium) + swap-lane.sh
+           + mock_openai_server.py / selftest.sh — rehearse all four gates offline
+ops/       RUNBOOK.md (the gotcha compendium), swap-lane.sh, PINS.md (reverify
+           pins on arrival), CHECKLIST.md (printable delivery runsheet),
+           evidence/ templates, systemd/ weekly smoke, sessions/ (doc 06 state)
+docs/      the docs package 00–07 — start at docs/INDEX.md
+.gitignore blocks config/cluster.env — secrets never enter git
 ```
 
 ## Documentation

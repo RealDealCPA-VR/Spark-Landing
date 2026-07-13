@@ -19,6 +19,10 @@ the week hardware arrives.
 | 06 | `06-HANDOFF-PICKUP.md` | Starting or ending any agent work session |
 | 07 | `07-DEFINITION-OF-DONE.md` | You want to know what's left |
 
+Delivery week: `ops/PINS.md` (every pinned value + the reverify-on-arrival
+checklist) and `ops/CHECKLIST.md` (printable Day 0/1/2 runsheet, maps 1:1
+to docs 02/03) are the entry points once hardware is in front of you.
+
 ## Ground rules that apply across all docs
 
 1. **Source of truth is layered:** hardware behavior > `ops/RUNBOOK.md` >

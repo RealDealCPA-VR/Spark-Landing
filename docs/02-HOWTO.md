@@ -16,7 +16,8 @@ sudo fwupdmgr refresh && sudo fwupdmgr upgrade && sudo reboot
 # 3. Cable QSFP↔QSFP with the DAC, then on EACH Spark
 ./day0/02-network-fabric.sh --persist  # link 200000Mb/s, peer ping PASS
 
-# 4. From Spark A only — fabric truth
+# 4. From Spark A only — fabric truth. The script preps the NCCL all-reduce
+#    and prints the exact docker commands — run those on both nodes for BUSBW.
 ./day0/03-nccl-validate.sh             # record per-node GID indexes,
                                        # BUSBW ≥ 15 GB/s before any cluster lane
 # 5. On EACH Spark (recommended)
@@ -64,7 +65,7 @@ uncomment `fleet` in `gateway/litellm-config.yaml` and restart gateway.
 | Back to daily mode | `ops/swap-lane.sh solo` |
 | Everything off | `ops/swap-lane.sh down` |
 | Read a lane's logs | `docker logs -f vllm_brain` / `vllm_coder` |
-| Throughput spot-check | `eval/bench_decode.py --model <route>` (never trust a cold first request) |
+| Throughput spot-check | `eval/bench_decode.py --base-url http://<gateway>:4000/v1 --model <route>` (never trust a cold first request) |
 | Free stuck launches | `docker rm -f <name>` on BOTH nodes, drop caches, retry |
 
 ## E. Common changes (each triggers doc 04 regression sets)
@@ -73,10 +74,13 @@ uncomment `fleet` in `gateway/litellm-config.yaml` and restart gateway.
 shadow port, gates, promote via config, archive old tenant record.
 
 **Bump a vLLM image:** change the tag in `cluster.env`, restart the lane,
-run G2–G4 (G5 too if the lane serves long context). Record tag + digest.
+run G2–G4 (G5 too if the lane serves long context), then G6 — the doc 04
+row includes the gateway check. Record tag + digest.
 
 **Change GMU / flags:** bracket GMU in 0.005 steps if boot is marginal;
-re-run G2–G3; note the winning value in the lane's hermes-brain page.
+re-run G2–G3 (engine/parser/sampling changes add G4; a new context target
+adds G5 at that target — doc 04 matrix); note the winning value in the
+lane's hermes-brain page.
 
 **Add a utility service on B (Whisper, embeddings):** start it on its own
 port, add a gateway route, smoke it. Keep it out of the coder's vLLM

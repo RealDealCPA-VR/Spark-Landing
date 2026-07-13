@@ -67,7 +67,15 @@ Expect ~50-67 tok/s single-stream. Structured JSON tends to run FASTER than
 prose here — spec-decode acceptance is higher on predictable tokens — so your
 extraction workloads sit on the favorable side.
 
-## Gate 4 — needle tests at YOUR depths (non-negotiable)
+## Gate 4 — behavior suite
+
+```bash
+../../eval/behavior_suite.py --base-url http://127.0.0.1:8888/v1 --model default
+```
+Schema-compliance and format gates apply to this lane like any other — more
+so, since the KV path is experimental (Stage C padded NVFP4 envelope).
+
+## Gate 5 — needle tests at YOUR depths (non-negotiable)
 
 The 1M figure is advertised max_model_len with speed probes — **not** a
 retrieval/correctness benchmark. Before any deep-context client work:
@@ -79,14 +87,6 @@ retrieval/correctness benchmark. Before any deep-context client work:
 ```
 Pass = exact recall at every depth you intend to use. A 300-page workpaper
 bundle is ~200-300K tokens; test there, not at 1M, unless you'll use 1M.
-
-## Gate 5 — behavior suite
-
-```bash
-../../eval/behavior_suite.py --base-url http://127.0.0.1:8888/v1 --model default
-```
-Schema-compliance and format gates apply to this lane like any other — more
-so, since the KV path is experimental (Stage C padded NVFP4 envelope).
 
 ## Wire into the gateway
 

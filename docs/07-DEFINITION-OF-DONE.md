@@ -15,7 +15,7 @@ evidence on the relevant hermes-brain pages, before claiming the level.
 - [x] Shell/Python syntax verified; YAML validated
 - [ ] ~~Executed on GB10 silicon~~ → deferred to Level 2 by definition
 
-## Level 1.5 — Pre-delivery hardening (no hardware required) — added 2026-07-13
+## Level 1.5 — Pre-delivery hardening (no hardware required) ✅ 2026-07-13
 
 Critique of Level 1 that motivated this level: "Shell/Python syntax verified"
 is not "verified" — nothing in the kit had ever been *executed*, the gateway
@@ -26,49 +26,49 @@ Sparks arrive, and shrinks delivery-day risk to hardware-only unknowns.
 
 ### A. Correctness fixes (kit was wrong as shipped)
 
-- [ ] A1 Gateway: LiteLLM `api_base` env interpolation fixed (full-URL env
+- [x] A1 Gateway: LiteLLM `api_base` env interpolation fixed (full-URL env
       vars via compose; inline `http://os.environ/...` never resolved)
-- [ ] A2 NCCL validate: 2-rank all-reduce busbw formula corrected (was 2×
+- [x] A2 NCCL validate: 2-rank all-reduce busbw formula corrected (was 2×
       optimistic — a failing fabric could pass the 15 GB/s gate); `-e` flag
       applied per env var in printed manual command; RoCE device name
       parameterized
-- [ ] A3 Eval suite: reasoning-model tolerance (reasoning_content, token
+- [x] A3 Eval suite: reasoning-model tolerance (reasoning_content, token
       headroom), explicit imports, exit codes verified
-- [ ] A4 Script hygiene: 01-preflight sources cluster.env (HF_CACHE disk
+- [x] A4 Script hygiene: 01-preflight sources cluster.env (HF_CACHE disk
       check was checking $HOME); fabric MTU set in ephemeral path too;
       lane env parity
-- [ ] A5 Pins current as of hardening date: frontier Claude model string,
+- [x] A5 Pins current as of hardening date: frontier Claude model string,
       image tags; `:latest` contradiction resolved or documented
-- [ ] A6 Gateway auth: optional LITELLM_MASTER_KEY wired (LAN-open gateway
+- [x] A6 Gateway auth: optional LITELLM_MASTER_KEY wired (LAN-open gateway
       could spend frontier API credits)
 
 ### B. Test the testers (gates must be proven runnable before hardware day)
 
-- [ ] B1 `eval/mock_openai_server.py` (stdlib) + self-test that runs smoke /
+- [x] B1 `eval/mock_openai_server.py` (stdlib) + self-test that runs smoke /
       bench / needle / behavior against the mock — all four gates exercised
       end-to-end, pass and fail paths both demonstrated
-- [ ] B2 Static pass recorded: `bash -n` every .sh, `py_compile` every .py,
+- [x] B2 Static pass recorded: `bash -n` every .sh, `py_compile` every .py,
       YAML parsed
 
 ### C. Delivery-day ergonomics
 
-- [ ] C1 `ops/PINS.md` — every pinned value in one table with a
+- [x] C1 `ops/PINS.md` — every pinned value in one table with a
       reverify-on-arrival checklist (Level 2's "pins reverified" now has a
       concrete artifact to execute against)
-- [ ] C2 `ops/evidence/` templates — lane evidence page + gate-run record
+- [x] C2 `ops/evidence/` templates — lane evidence page + gate-run record
       in the exact doc 03/04 formats (no format invention on delivery day)
-- [ ] C3 `ops/CHECKLIST.md` — printable Day 0/1/2 runsheet, one checkbox
+- [x] C3 `ops/CHECKLIST.md` — printable Day 0/1/2 runsheet, one checkbox
       per gate, maps 1:1 to docs 02/03
-- [ ] C4 `ops/systemd/` — weekly-smoke timer + service examples (Level 3
+- [x] C4 `ops/systemd/` — weekly-smoke timer + service examples (Level 3
       monitoring becomes a copy, not a design task)
 
 ### D. Repo integrity
 
-- [ ] D1 Git repo initialized; v0.2 baseline committed; `.gitignore` blocks
+- [x] D1 Git repo initialized; v0.2 baseline committed; `.gitignore` blocks
       `config/cluster.env` (doc 06's protocol is now actually executable)
-- [ ] D2 MANIFEST covers all kit files (not just docs) + `ops/manifest.sh`
+- [x] D2 MANIFEST covers all kit files (not just docs) + `ops/manifest.sh`
       to regenerate/verify; regenerated last after all edits
-- [ ] D3 Cross-file consistency sweep green: README repo map, INDEX, ports,
+- [x] D3 Cross-file consistency sweep green: README repo map, INDEX, ports,
       container names, gate references, paths
 
 ## Level 2 — Deployment-complete (hardware serving)

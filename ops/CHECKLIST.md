@@ -91,8 +91,6 @@ problems are expensive (doc 02 §A).
 - [ ] `../../eval/needle.py --base-url http://127.0.0.1:8888/v1 --model default --context-tokens 100000 --depths 10,50,90`
       then again with `--context-tokens 300000`
       → PASS: exact recall at EVERY depth — **G5**
-      (lane README numbers needle/behavior locally as Gates 4/5; doc 03's
-      strict G4→G5 order governs)
 - [ ] Uncomment the `fleet` block in `gateway/litellm-config.yaml`;
       `docker compose restart` the gateway; `eval/smoke.sh` → fleet PASS,
       plus fallback demo — **G6**

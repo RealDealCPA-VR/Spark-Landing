@@ -27,7 +27,7 @@ model IDs, floors)" box. Run it BEFORE Day 0 gates; anything newer than
 2026-07-13 wins.
 
 - [ ] Driver floor still `580.95.05` (or a higher published floor) — update `day0/01-preflight.sh` if moved
-- [ ] NGC vLLM: is `26.06-py3` still the supported tag? Bump deliberately (doc 04 row: image bump → G2–G4, +G5 on long-context lanes)
+- [ ] NGC vLLM: is `26.06-py3` still the supported tag? Bump deliberately (doc 04 row: image bump → G2–G4 + G6, +G5 on long-context lanes)
 - [ ] `eugr/spark-vllm` pulled and **digest-pinned** in `config/cluster.env` — `:latest` does not survive delivery day
 - [ ] LiteLLM `main-stable` pulled; digest recorded on the gateway's evidence page
 - [ ] BRAIN + CODER model cards re-read: license unchanged (else G0 re-runs), revision recorded

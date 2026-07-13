@@ -13,6 +13,8 @@ MODE="${1:?usage: swap-lane.sh solo|cluster-dsv4|down}"
 
 stop_all() {
   echo "-- stopping serving containers on both nodes --"
+  # vllm_node: not created by this kit — defensive against container names
+  # the upstream DSv4 recipe has used; rm -f of a nonexistent name is a no-op.
   local NAMES="vllm_brain vllm_coder vllm_node vllm-dspark"
   for n in $NAMES; do docker rm -f "$n" 2>/dev/null || true; done
   ssh "$SPARK_B_SSH" "for n in $NAMES; do docker rm -f \$n 2>/dev/null || true; done" || true

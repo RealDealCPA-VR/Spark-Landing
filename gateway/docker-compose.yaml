@@ -1,0 +1,19 @@
+# LiteLLM gateway — the single OpenAI-compatible endpoint for everything.
+# Run on Spark A (or any always-on box):
+#   docker compose --env-file ../config/cluster.env up -d
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: vr_gateway
+    restart: unless-stopped
+    network_mode: host            # gateway reaches lanes on LAN/localhost
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml:ro
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - SPARK_A_HOST=${SPARK_A_HOST}
+      - SPARK_B_HOST=${SPARK_B_HOST}
+      - BRAIN_PORT=${BRAIN_PORT}
+      - CODER_PORT=${CODER_PORT}
+      - FLEET_PORT=${FLEET_PORT}
+    command: ["--config", "/app/config.yaml", "--port", "${GATEWAY_PORT:-4000}"]

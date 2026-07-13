@@ -1,0 +1,50 @@
+# LiteLLM routing — clients (vr-dispatch, Open WebUI, scripts) send
+# model="brain" | "coder" | "fleet" | "frontier" and never care where it runs.
+
+model_list:
+  # Always-on: Spark A, gpt-oss-120b
+  - model_name: brain
+    litellm_params:
+      model: hosted_vllm/openai/gpt-oss-120b
+      api_base: http://os.environ/SPARK_A_HOST:os.environ/BRAIN_PORT/v1
+      api_key: "local"
+
+  # Always-on: Spark B, Qwen3.6-27B (code + tools + reasoning)
+  - model_name: coder
+    litellm_params:
+      model: hosted_vllm/Qwen/Qwen3.6-27B-FP8
+      api_base: http://os.environ/SPARK_B_HOST:os.environ/CODER_PORT/v1
+      api_key: "local"
+
+  # On-demand cluster lane. UNCOMMENT ONLY after lanes/cluster-dsv4-fleet
+  # Gates 0-5 pass. While this lane is up, brain/coder are down (swap-lane.sh)
+  # and their fallbacks below carry the traffic.
+  # - model_name: fleet
+  #   litellm_params:
+  #     model: hosted_vllm/deepseek-v4-flash-dspark
+  #     api_base: http://os.environ/SPARK_A_HOST:os.environ/FLEET_PORT/v1
+  #     api_key: "local"
+
+  # Frontier fallback via Claude API. Model strings move — verify current
+  # ones at https://docs.claude.com/en/api/overview before changing.
+  - model_name: frontier
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+
+litellm_settings:
+  # LOAD-BEARING. Client SDKs pass divergent reasoning/sampling params;
+  # without drop_params the upstream rejects unknown ones and calls fail
+  # in ways that look like model bugs.
+  drop_params: true
+  num_retries: 1
+  request_timeout: 600
+
+router_settings:
+  # Local executes; frontier catches what local can't. Keep the dependency
+  # one-way: nothing local should be a fallback FOR frontier.
+  fallbacks:
+    - brain: ["frontier"]
+    - coder: ["frontier"]
+    # - fleet: ["frontier"]
+
+general_settings: {}

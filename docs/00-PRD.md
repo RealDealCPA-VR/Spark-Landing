@@ -4,7 +4,7 @@
 
 ## 1. Problem
 
-VR Tax & Consulting runs agentic automation (vr-dispatch, Iron Jarvis, skills
+RealDealCPA runs agentic automation (vr-dispatch, Iron Jarvis, skills
 pipelines) over sensitive client financial data. Cloud frontier models are the
 quality ceiling but are metered, rate-limited, and involve data egress
 decisions per workload. The existing RTX 6000 Ada (48GB) caps model class.
